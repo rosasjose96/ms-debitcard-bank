@@ -8,4 +8,5 @@ import reactor.core.publisher.Mono;
 
 public interface DebitServiceRepository extends ReactiveMongoRepository<DebitCard,String> {
     Mono<DebitCard> findByPan (String pan);
+    Mono<DebitCard> findDebitCardByCustomer_CustomerIdentityNumber(String customerIdentityNumber);
 }

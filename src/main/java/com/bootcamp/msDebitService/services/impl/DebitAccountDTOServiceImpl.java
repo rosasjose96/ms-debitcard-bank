@@ -27,8 +27,7 @@ public class DebitAccountDTOServiceImpl implements IDebitAccountDTOService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DebitAccountDTOServiceImpl.class);
 
     @Autowired
-    @Qualifier("client")
-    private WebClient.Builder client;
+    private WebClient.Builder webClientBuilder;
 
 
     @Override
@@ -37,7 +36,7 @@ public class DebitAccountDTOServiceImpl implements IDebitAccountDTOService {
         LOGGER.info("El tipo de debito es: " + typeofdebit);
         LOGGER.info("El id del débito es: " + debitAccountDTO.getId());
         if(typeofdebit.equals("SAVING_ACCOUNT")) {
-            return client.baseUrl("http://SAVINGACCOUNT-SERVICE/api/savingAccount")
+            return webClientBuilder.baseUrl("http://SAVINGACCOUNT-SERVICE/api/savingAccount")
                     .build()
                     .put()
                     .uri("/{id}", Collections.singletonMap("id", debitAccountDTO.getId()))
@@ -47,7 +46,7 @@ public class DebitAccountDTOServiceImpl implements IDebitAccountDTOService {
                     .retrieve()
                     .bodyToMono(DebitAccountDTO.class);
         }else if(typeofdebit.equals("CURRENT_ACCOUNT")) {
-            return client.baseUrl("http://CURRENTACCOUNT-SERVICE/api/currentAccount")
+            return webClientBuilder.baseUrl("http://CURRENTACCOUNT-SERVICE/api/currentAccount")
                     .build()
                     .put()
                     .uri("/{id}", Collections.singletonMap("id", debitAccountDTO.getId()))
@@ -57,7 +56,7 @@ public class DebitAccountDTOServiceImpl implements IDebitAccountDTOService {
                     .retrieve()
                     .bodyToMono(DebitAccountDTO.class);
         }else if(typeofdebit.equals("FIXEDTERM_ACCOUNT")) {
-            return client.baseUrl("http://localhost:8096")
+            return webClientBuilder.baseUrl("http://FIXEDTERMACCOUNT-SERVICE/api/fixedTermAccount")
                     .build()
                     .put()
                     .uri("/{id}", Collections.singletonMap("id", debitAccountDTO.getId()))
@@ -77,7 +76,7 @@ public class DebitAccountDTOServiceImpl implements IDebitAccountDTOService {
         LOGGER.info("initializing Debit query: " + typeofdebit);
         params.put("accountNumber", accountNumber);
         if (typeofdebit.equals("SAVING_ACCOUNT")) {
-            return client.baseUrl("http://SAVINGACCOUNT-SERVICE/api/savingAccount")
+            return webClientBuilder.baseUrl("http://SAVINGACCOUNT-SERVICE/api/savingAccount")
                     .build()
                     .get()
                     .uri("/account/{accountNumber}", params)
@@ -85,7 +84,7 @@ public class DebitAccountDTOServiceImpl implements IDebitAccountDTOService {
                     .exchangeToMono(clientResponse -> clientResponse.bodyToMono(DebitAccountDTO.class))
                     .doOnNext(c -> LOGGER.info("Account Response: Account Amounth={}", c.getAmount()));
         }else if (typeofdebit.equals("CURRENT_ACCOUNT")) {
-            return client.baseUrl("http://CURRENTACCOUNT-SERVICE/api/currentAccount")
+            return webClientBuilder.baseUrl("http://CURRENTACCOUNT-SERVICE/api/currentAccount")
                     .build()
                     .get()
                     .uri("/account/{accountNumber}", params)
@@ -93,7 +92,7 @@ public class DebitAccountDTOServiceImpl implements IDebitAccountDTOService {
                     .exchangeToMono(clientResponse -> clientResponse.bodyToMono(DebitAccountDTO.class))
                     .doOnNext(c -> LOGGER.info("CreditCard Response: CreditCard Amounth={}", c.getAmount()));
         } else if (typeofdebit.equals("FIXEDTERM_ACCOUNT")) {
-            return client.baseUrl("http://localhost:8096")
+            return webClientBuilder.baseUrl("http://FIXEDTERMACCOUNT-SERVICE/api/fixedTermAccount")
                     .build()
                     .get()
                     .uri("/account/{accountNumber}", params)

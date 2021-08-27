@@ -16,7 +16,7 @@ public interface IDebitAccountDTOService {
      * @param accountNumber the account number
      * @return the mono
      */
-    public Mono<DebitAccountDTO> findByAccountNumber(String typeofdebit, String accountNumber);
+    Mono<DebitAccountDTO> findByAccountNumber(String typeofdebit, String accountNumber);
 
     /**
      * Update debit mono.
@@ -25,5 +25,6 @@ public interface IDebitAccountDTOService {
      * @param account     the account
      * @return the mono
      */
-    public Mono<DebitAccountDTO> updateDebit(String typeofdebit, DebitAccountDTO account);
+    Mono<DebitAccountDTO> updateDebit(String typeofdebit, DebitAccountDTO account);
+
 }

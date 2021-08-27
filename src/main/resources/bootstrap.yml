@@ -1,6 +1,6 @@
 spring:
   application:
-    name: debit-service
+    name: debitcard-service
   profiles:
     active: dev     
   cloud:

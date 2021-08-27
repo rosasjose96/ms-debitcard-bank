@@ -4,12 +4,8 @@ package com.bootcamp.msDebitService.services.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
-import com.bootcamp.msDebitService.models.dto.CustomerDTO;
 import com.bootcamp.msDebitService.models.entities.DebitCard;
 import com.bootcamp.msDebitService.repositories.DebitServiceRepository;
 import com.bootcamp.msDebitService.services.IDebitCardService;
@@ -17,18 +13,10 @@ import com.bootcamp.msDebitService.services.IDebitCardService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 @Service
-public class DebitServiceImpl implements IDebitCardService {
+public class DebitCardServiceImpl implements IDebitCardService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DebitServiceImpl.class);
-
-    @Autowired
-    @Qualifier("client")
-    private WebClient.Builder client;
+    private static final Logger LOGGER = LoggerFactory.getLogger(DebitCardServiceImpl.class);
 
     @Autowired
     private DebitServiceRepository repository;
@@ -61,6 +49,11 @@ public class DebitServiceImpl implements IDebitCardService {
     @Override
     public Mono<DebitCard> findByPan(String pan) {
         return repository.findByPan(pan);
+    }
+
+    @Override
+    public Mono<DebitCard> findDebitCardByCustomer_CustomerIdentityNumber(String customerIdentityNumber) {
+        return repository.findDebitCardByCustomer_CustomerIdentityNumber(customerIdentityNumber);
     }
 
 }
