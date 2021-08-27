@@ -1,8 +1,12 @@
 package com.bootcamp.msDebitService.services;
 
 
+import com.bootcamp.msDebitService.models.dto.CurrentAccount;
 import com.bootcamp.msDebitService.models.dto.DebitAccountDTO;
 
+import com.bootcamp.msDebitService.models.dto.FixedTermAccount;
+import com.bootcamp.msDebitService.models.dto.SavingAccount;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -18,13 +22,10 @@ public interface IDebitAccountDTOService {
      */
     Mono<DebitAccountDTO> findByAccountNumber(String typeofdebit, String accountNumber);
 
-    /**
-     * Update debit mono.
-     *
-     * @param typeofdebit the typeofdebit
-     * @param account     the account
-     * @return the mono
-     */
-    Mono<DebitAccountDTO> updateDebit(String typeofdebit, DebitAccountDTO account);
+    Mono<SavingAccount> getSavingAccount(String accountNumber);
+
+    Flux<CurrentAccount> getCurrentAccount(String accountNumber);
+
+    Mono<FixedTermAccount> getFixedTermAccount(String accountNumber);
 
 }

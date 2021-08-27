@@ -22,35 +22,9 @@ import java.util.List;
 @NoArgsConstructor
 public class CurrentAccount {
 
-    @Id
-    private String id;
-
     private String typeOfAccount;
 
-    @Indexed(unique=true)
     private String accountNumber;
 
     private double amount;
-
-    private int maxLimitMovementPerMonth;
-
-    private double commission;
-
-    private int movementPerMonth;
-
-    private String customerIdentityNumber;
-
-    private double minAmountAveragePerMonth;
-
-    private double amountAveragePerMonth;
-
-    private CustomerDTO customer;
-
-    @NotNull
-    private List<Titular> titulares= new ArrayList<>();
-
-    private List<Firmante> firmantes= new ArrayList<>();
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime dateOperation = LocalDateTime.now();
 }

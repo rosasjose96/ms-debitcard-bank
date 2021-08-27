@@ -93,24 +93,9 @@ public class DebitCardController {
 					.switchIfEmpty(Mono.just(new ResponseEntity<>(HttpStatus.BAD_REQUEST)));
 	}
 		
-		@PostMapping("/payProduct")
-		public Mono<DebitCard> payProductDebitCard(@RequestBody DebitCard debitCard, double amountOfDebit) {
-			
-			List<Mono<DebitAccountDTO>> accounts = new ArrayList<>();
-			
-			debitCard.getAccounts().forEach(acc->{
-				accounts.add(acc.getOrder()-1 ,accountService.
-					findByAccountNumber(acc.getTypeOfAccount(),acc.getNumberOfAccount()).flatMap((a)-> Mono.just(a)));
-			});
-			Flux<DebitAccountDTO> debitAccounts =Flux.concat(accounts);
-			Mono<Double>  amountInAccount=debitAccounts.flatMap((d)->Mono.just(d.getAmount())).reduce(0.0, Double::sum) ;
-			LOGGER.info("amountInAccount");
-			if (amountInAccount.block() < amountOfDebit) {
-				LOGGER.info("amountInAccount");
-			}else {
-				
-			}
-			return null;
+		@PostMapping("/debitUses")
+		public Mono<DebitCard> debitPaymentOrRetire(@RequestBody DebitCard debitCard, double amountOfDebit) {
+
 			
 		}
 		
