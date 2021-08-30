@@ -1,10 +1,8 @@
 package com.bootcamp.msDebitService.controller;
 
 
-import java.util.ArrayList;
-import java.util.List;
 
-import com.bootcamp.msDebitService.models.dto.CustomerDTO;
+import com.bootcamp.msDebitService.models.dto.*;
 import com.bootcamp.msDebitService.services.ICustomerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,14 +12,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.bootcamp.msDebitService.models.dto.AccountsDTO;
-import com.bootcamp.msDebitService.models.dto.DebitAccountDTO;
 import com.bootcamp.msDebitService.models.entities.DebitCard;
 import com.bootcamp.msDebitService.services.IDebitAccountDTOService;
 import com.bootcamp.msDebitService.services.IDebitCardService;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import javax.validation.Valid;
 
 
 @RestController
@@ -46,7 +44,7 @@ public class DebitCardController {
 		}
 		
 		@PostMapping("/{customerIdentityNumber}")
-		public Mono<ResponseEntity<DebitCard>> saveDebitCard(@PathVariable String customerIdentityNumber ,@RequestBody Mono<DebitCard> request) {
+		public Mono<ResponseEntity<DebitCard>> saveDebitCard(@PathVariable String customerIdentityNumber , @Valid @RequestBody Mono<DebitCard> request) {
 
 
 			return request.flatMap(debitCard -> customerService.getCustomer(customerIdentityNumber)
@@ -93,10 +91,11 @@ public class DebitCardController {
 					.switchIfEmpty(Mono.just(new ResponseEntity<>(HttpStatus.BAD_REQUEST)));
 	}
 		
-		@PostMapping("/debitUses")
-		public Mono<DebitCard> debitPaymentOrRetire(@RequestBody DebitCard debitCard, double amountOfDebit) {
+		@GetMapping("/debitUses/{pan}/{amount}/{password}")
+		public Mono<Pasive> debitPaymentOrRetire(@PathVariable String pan, @PathVariable double amount, @PathVariable String password) {
 
-			
+			return accountService.searchEspecificAccount(pan
+					, amount, password);
 		}
 		
 		
