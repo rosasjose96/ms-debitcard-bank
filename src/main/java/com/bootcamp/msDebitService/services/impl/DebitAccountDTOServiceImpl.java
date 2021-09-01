@@ -44,7 +44,7 @@ public class DebitAccountDTOServiceImpl implements IDebitAccountDTOService {
                 .uri("/account/{accountNumber}", params)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchangeToMono(clientResponse -> clientResponse.bodyToMono(Pasive.class))
-                .doOnNext(c -> LOGGER.info("SavingAccount Response: savingaccount={}", c.getAccountNumber()));
+                .doOnNext(c -> LOGGER.info("SavingAccount Response: savingaccount={}", c.getId()));
     }
 
     @Override
@@ -115,15 +115,15 @@ public class DebitAccountDTOServiceImpl implements IDebitAccountDTOService {
     public Mono<DebitAccountDTO> getAccountAmount(String typeofdebit, String accountNumber) {
         if(typeofdebit.equals("SAVING_ACCOUNT")){
             return getSavingAccount(accountNumber).map(saving -> DebitAccountDTO
-                    .builder().accountNumber(saving.getAccountNumber())
+                    .builder().id(saving.getId()).accountNumber(saving.getAccountNumber())
                     .amount(saving.getAmount()).typeOfAccount(saving.getTypeOfAccount()).build());
         } else if(typeofdebit.equals("CURRENT_ACCOUNT")){
             return getCurrentAccount(accountNumber).map(current -> DebitAccountDTO
-                    .builder().accountNumber(current.getAccountNumber())
+                    .builder().id(current.getId()).accountNumber(current.getAccountNumber())
                     .amount(current.getAmount()).typeOfAccount(current.getTypeOfAccount()).build());
         } else if(typeofdebit.equals("FIXEDTERM_ACCOUNT")){
             return getFixedTermAccount(accountNumber).map(fixedTerm -> DebitAccountDTO
-                    .builder().accountNumber(fixedTerm.getAccountNumber())
+                    .builder().id(fixedTerm.getId()).accountNumber(fixedTerm.getAccountNumber())
                     .amount(fixedTerm.getAmount()).typeOfAccount(fixedTerm.getTypeOfAccount()).build());
         } else return Mono.empty();
     }
@@ -145,6 +145,7 @@ public class DebitAccountDTOServiceImpl implements IDebitAccountDTOService {
                     .flatMapSequential(account ->
                       getAccountAmount(account.getTypeOfAccount(), account.getNumberOfAccount())
                             .map(accountValue -> Pasive.builder()
+                                    .id(accountValue.getId())
                                     .typeOfAccount(accountValue.getTypeOfAccount())
                                     .accountNumber(accountValue.getAccountNumber())
                                     .amount(accountValue.getAmount()).build())
@@ -157,47 +158,15 @@ public class DebitAccountDTOServiceImpl implements IDebitAccountDTOService {
                    List<Pasive> lista= accounts.stream()
                     .filter(account -> account.getAmount()>amount).collect(Collectors.toList());
 
-                   if(lista.isEmpty()){
-                       return Mono.empty();
-                   } else return Mono.just(lista.get(0));
+//            if(lista.isEmpty()){
+//                return Mono.empty();
+//            } else return Mono.just(lista.get(0))
+//                    .doOnNext(account -> LOGGER.info("la encontrada es : "
+//                            +account.getId()));
+
+                    return Mono.just(lista.stream().findFirst()
+                    .orElseThrow(() -> new RuntimeException("Do not have an account with enough amount")));
         });
     }
-
-//          repository.findByPan(pan).flatMap(debitcard -> {
-//            List<Pasive> pasives = new ArrayList<>();
-//            Flux<AccountsDTO> accounts = Mono.just(debitcard.getAccounts()).flatMapMany(Flux::fromIterable);
-//                    accounts.flatMap(account -> getAccountAmount(account.getTypeOfAccount(), account.getNumberOfAccount())
-//                            .doOnNext(accountvalue -> LOGGER.info("La cuenta : "+ accountvalue.getAccountNumber()
-//                                    + " cuyo saldo es: " +accountvalue.getAmount()))
-//                            .map(accountValue -> pasives.add(Pasive.builder()
-//                                    .typeOfAccount(accountValue.getTypeOfAccount())
-//                                    .accountNumber(accountValue.getAccountNumber())
-//                                    .amount(accountValue.getAmount()).build())));
-//            });
-//            Pasive account = pasives.stream().filter(pasive -> pasive.getAmount()>=amount)
-//                    .collect(Collectors.toList()).get(0);
-
-//    }
-
-//    @Override
-//    public Mono<List<Pasive>> searchEspecificAccount(String pan, double amount) {
-//
-//        return repository.findByPan(pan).flatMap(debitcard -> {
-//            List<Pasive> pasives = new ArrayList<>();
-//            debitcard.getAccounts().stream().forEach(account -> {
-//                getAccountAmount(account.getTypeOfAccount(), account.getNumberOfAccount())
-//                        .doOnNext(accountvalue -> LOGGER.info("La cuenta : "+ accountvalue.getAccountNumber()
-//                                + " cuyo saldo es: " +accountvalue.getAmount()))
-//                        .map(accountValue -> pasives.add(Pasive.builder()
-//                                .typeOfAccount(accountValue.getTypeOfAccount())
-//                                .accountNumber(accountValue.getAccountNumber())
-//                                .amount(accountValue.getAmount()).build()));
-//            });
-////            Pasive account = pasives.stream().filter(pasive -> pasive.getAmount()>=amount)
-////                    .collect(Collectors.toList()).get(0);
-//
-//            return Mono.just(account);
-//        });
-//    }
 
 }

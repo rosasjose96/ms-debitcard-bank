@@ -48,7 +48,6 @@ public class DebitCard {
     private LocalDateTime dateOperation = LocalDateTime.now();
 
     @NotNull
-    @NotBlank
     private List<AccountsDTO>  accounts ;
 
     private CustomerDTO customer;

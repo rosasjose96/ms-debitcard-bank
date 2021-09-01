@@ -95,7 +95,8 @@ public class DebitCardController {
 		public Mono<Pasive> debitPaymentOrRetire(@PathVariable String pan, @PathVariable double amount, @PathVariable String password) {
 
 			return accountService.searchEspecificAccount(pan
-					, amount, password);
+					, amount, password)
+					.doOnNext(account -> LOGGER.info("la cuenta es : " +account.getId()));
 		}
 		
 		
